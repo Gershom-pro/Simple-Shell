@@ -1,151 +1,124 @@
-# ALX Simple Shell Team Project
+# shellby - Simple Shell :shell:
 
-> This is an ALX collaboration project on Shell. We were tasked to create a simple shell that mimics the Bash shell. Our shell shall be called **hsh**
+A simple UNIX command interpreter written as part of the low-level programming and algorithm track at Holberton School.
 
-## Project was completed using
+## Description :speech_balloon:
 
-- C language
-- Shell
-- Betty linter
+**Shellby** is a simple UNIX command language interpreter that reads commands from either a file or standard input and executes them.
 
-## General Requirement for project
+### Invocation :running:
 
-- All files will be compiled on Ubuntu 20.04 LTS using gcc, using the options -Wall -Werror -Wextra -pedantic -std=gnu89
-- All files should end with a new line
-- A README.md file, at the root of the folder of the project is mandatory
-- Use the Betty style. It will be checked using betty-style.pl and betty-doc.pl
-- Shell should not have any memory leaks
-- No more than 5 functions per file
-- All header files should be include guarded
-- Write a README with the description of the project
+Usage: **shellby** [filename]
 
+To invoke **shellby**, compile all `.c` files in the repository and run the resulting executable:
 
-## Description
+```
+gcc *.c -o shellby
+./shellby
+```
 
-**hsh** is a simple UNIX command language interpreter that reads commands from either a file or standard input and executes them.
-
-### How **hsh** works
-* Prints a prompt and waits for a command from the user
-* Creates a child process in which the command is checked
-* Checks for built-ins, aliases in the PATH, and local executable programs
-* The child process is replaced by the command, which accepts arguments
-* When the command is done, the program returns to the parent process and prints the prompt
-* The program is ready to receive a new command
-* To exit: press Ctrl-D or enter "exit" (with or without a status)
-* Works also in non interactive mode
-
-### Compilation
-
-`gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh`
-
-### Invocation
-
-Usage: **hsh** [filename]
-
-To invoke **hsh**, compile all `.c` files in the repository and run the resulting executable.
-
-**hsh** can be invoked both interactively and non-interactively. If **hsh** is invoked with standard input not connected to a terminal, it reads and executes received commands in order.
+**Shellby** can be invoked both interactively and non-interactively. If **shellby** is invoked with standard input not connected to a terminal, it reads and executes received commands in order.
 
 Example:
 ```
-$ echo "echo 'hello'" | ./hsh
+$ echo "echo 'hello'" | ./shellby
 'hello'
 $
 ```
 
-If **hsh** is invoked with standard input connected to a terminal (determined by [isatty](https://linux.die.net/man/3/isatty)(3)), an *interactive* shell is opened. When executing interactively, **hsh** displays the prompt `$ ` when it is ready to read a command.
+If **shellby** is invoked with standard input connected to a terminal (determined by [isatty](https://linux.die.net/man/3/isatty)(3)), an *interactive* shell is opened. When executing interactively, **shellby** displays the prompt `$ ` when it is ready to read a command.
 
 Example:
 ```
-$./hsh
+$./shellby
 $
 ```
 
-Alternatively, if command line arguments are supplied upon invocation, **hsh** treats the first argument as a file from which to read commands. The supplied file should contain one command per line. **hsh** runs each of the commands contained in the file in order before exiting.
+Alternatively, if command line arguments are supplied upon invocation, **shellby** treats the first argument as a file from which to read commands. The supplied file should contain one command per line. **Shellby** runs each of the commands contained in the file in order before exiting.
 
 Example:
 ```
 $ cat test
 echo 'hello'
-$ ./hsh test
+$ ./shellby test
 'hello'
 $
 ```
 
-### Environment
+### Environment :deciduous_tree:
 
-Upon invocation, **hsh** receives and copies the environment of the parent process in which it was executed. This environment is an array of *name-value* strings describing variables in the format *NAME=VALUE*. A few key environmental variables are:
+Upon invocation, **shellby** receives and copies the environment of the parent process in which it was executed. This environment is an array of *name-value* strings describing variables in the format *NAME=VALUE*. A few key environmental variables are:
 
 #### HOME
 The home directory of the current user and the default directory argument for the **cd** builtin command.
 
 ```
-$ echo "echo $HOME" | ./hsh
-/home/projects
+$ echo "echo $HOME" | ./shellby
+/home/vagrant
 ```
 
 #### PWD
 The current working directory as set by the **cd** command.
 
 ```
-$ echo "echo $PWD" | ./hsh
-/home/projects/alx/simple_shell
+$ echo "echo $PWD" | ./shellby
+/home/vagrant/holberton/simple_shell
 ```
 
 #### OLDPWD
 The previous working directory as set by the **cd** command.
 
 ```
-$ echo "echo $OLDPWD" | ./hsh
-/home/projects/alx/printf
+$ echo "echo $OLDPWD" | ./shellby
+/home/vagrant/holberton/printf
 ```
 
 #### PATH
 A colon-separated list of directories in which the shell looks for commands. A null directory name in the path (represented by any of two adjacent colons, an initial colon, or a trailing colon) indicates the current directory.
 
 ```
-$ echo "echo $PATH" | ./hsh
-/home/projects/.cargo/bin:/home/projects/.local/bin:/home/projects/.rbenv/plugins/ruby-build/bin:/home/projects/.rbenv/shims:/home/projects/.rbenv/bin:/home/projects/.nvm/versions/node/v10.15.3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/projects/.cargo/bin:/home/projects/workflow:/home/projects/.local/bin
+$ echo "echo $PATH" | ./shellby
+/home/vagrant/.cargo/bin:/home/vagrant/.local/bin:/home/vagrant/.rbenv/plugins/ruby-build/bin:/home/vagrant/.rbenv/shims:/home/vagrant/.rbenv/bin:/home/vagrant/.nvm/versions/node/v10.15.3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/vagrant/.cargo/bin:/home/vagrant/workflow:/home/vagrant/.local/bin
 ```
 
-### Command Execution
+### Command Execution :hocho:
 
-After receiving a command, **hsh** tokenizes it into words using `" "` as a delimiter. The first word is considered the command and all remaining words are considered arguments to that command. **hsh** then proceeds with the following actions:
+After receiving a command, **shellby** tokenizes it into words using `" "` as a delimiter. The first word is considered the command and all remaining words are considered arguments to that command. **Shellby** then proceeds with the following actions:
 1. If the first character of the command is neither a slash (`\`) nor dot (`.`), the shell searches for it in the list of shell builtins. If there exists a builtin by that name, the builtin is invoked.
-2. If the first character of the command is none of a slash (`\`), dot (`.`), nor builtin, **hsh** searches each element of the **PATH** environmental variable for a directory containing an executable file by that name.
+2. If the first character of the command is none of a slash (`\`), dot (`.`), nor builtin, **shellby** searches each element of the **PATH** environmental variable for a directory containing an executable file by that name.
 3. If the first character of the command is a slash (`\`) or dot (`.`) or either of the above searches was successful, the shell executes the named program with any remaining given arguments in a separate execution environment.
 
-### Exit Status
+### Exit Status :wave:
 
-**hsh** returns the exit status of the last command executed, with zero indicating success and non-zero indicating failure.
+**Shellby** returns the exit status of the last command executed, with zero indicating success and non-zero indicating failure.
 
 If a command is not found, the return status is `127`; if a command is found but is not executable, the return status is 126.
 
 All builtins return zero on success and one or two on incorrect usage (indicated by a corresponding error message).
 
-### Signals 
+### Signals :exclamation:
 
-While running in interactive mode, **hsh** ignores the keyboard input `Ctrl+c`. Alternatively, an input of end-of-file (`Ctrl+d`) will exit the program.
+While running in interactive mode, **shellby** ignores the keyboard input `Ctrl+c`. Alternatively, an input of end-of-file (`Ctrl+d`) will exit the program.
 
 User hits `Ctrl+d` in the third line.
 ```
-$ ./hsh
+$ ./shellby
 $ ^C
 $ ^C
 $
 ```
 
-### Variable Replacement
+### Variable Replacement :heavy_dollar_sign:
 
-**hsh** interprets the `$` character for variable replacement.
+**Shellby** interprets the `$` character for variable replacement.
 
 #### $ENV_VARIABLE
 `ENV_VARIABLE` is substituted with its value.
 
 Example:
 ```
-$ echo "echo $PWD" | ./hsh
-/home/projects/alx/simple_shell
+$ echo "echo $PWD" | ./shellby
+/home/vagrant/holberton/simple_shell
 ```
 
 #### $?
@@ -153,7 +126,7 @@ $ echo "echo $PWD" | ./hsh
 
 Example:
 ```
-$ echo "echo $?" | ./hsh
+$ echo "echo $?" | ./shellby
 0
 ```
 
@@ -162,30 +135,30 @@ The second `$` is substitued with the current process ID.
 
 Example:
 ```
-$ echo "echo $$" | ./hsh
+$ echo "echo $$" | ./shellby
 6494
 ```
 
-### Comments 
+### Comments :hash:
 
-**hsh** ignores all words and characters preceeded by a `#` character on a line.
+**Shellby** ignores all words and characters preceeded by a `#` character on a line.
 
 Example:
 ```
-$ echo "echo 'hello' #this will be ignored!" | ./hsh
+$ echo "echo 'hello' #this will be ignored!" | ./shellby
 'hello'
 ```
 
-### Operators
+### Operators :guitar:
 
-**hsh** specially interprets the following operator characters:
+**Shellby** specially interprets the following operator characters:
 
 #### ; - Command separator
 Commands separated by a `;` are executed sequentially.
 
 Example:
 ```
-$ echo "echo 'hello' ; echo 'world'" | ./hsh
+$ echo "echo 'hello' ; echo 'world'" | ./shellby
 'hello'
 'world'
 ```
@@ -195,9 +168,9 @@ $ echo "echo 'hello' ; echo 'world'" | ./hsh
 
 Example:
 ```
-$ echo "error! && echo 'hello'" | ./hsh
-./hsh: 1: error!: not found
-$ echo "echo 'all good' && echo 'hello'" | ./hsh
+$ echo "error! && echo 'hello'" | ./shellby
+./shellby: 1: error!: not found
+$ echo "echo 'all good' && echo 'hello'" | ./shellby
 'all good'
 'hello'
 ```
@@ -207,14 +180,14 @@ $ echo "echo 'all good' && echo 'hello'" | ./hsh
 
 Example:
 ```
-$ echo "error! || echo 'but still runs'" | ./hsh
-./hsh: 1: error!: not found
+$ echo "error! || echo 'but still runs'" | ./shellby
+./shellby: 1: error!: not found
 'but still runs'
 ```
 
 The operators `&&` and `||` have equal precedence, followed by `;`.
 
-### hsh Builtin Commands
+### Shellby Builtin Commands :nut_and_bolt:
 
 #### cd
   * Usage: `cd [DIRECTORY]`
@@ -226,15 +199,15 @@ The operators `&&` and `||` have equal precedence, followed by `;`.
 
 Example:
 ```
-$ ./hsh
+$ ./shellby
 $ pwd
-/home/projects/alx/simple_shell
+/home/vagrant/holberton/simple_shell
 $ cd ../
 $ pwd
-/home/projects/alx
+/home/vagrant/holberton
 $ cd -
 $ pwd
-/home/projects/alx/simple_shell
+/home/vagrant/holberton/simple_shell
 ```
 
 #### alias
@@ -246,11 +219,11 @@ $ pwd
 
 Example:
 ```
-$ ./hsh
+$ ./shellby
 $ alias show=ls
 $ show
 AUTHORS            builtins_help_2.c  errors.c         linkedlist.c        shell.h       test
-README.md          env_builtins.c     getline.c        locate.c            hsh
+README.md          env_builtins.c     getline.c        locate.c            shellby
 alias_builtins.c   environ.c          helper.c         main.c              split.c
 builtin.c          err_msgs1.c        helpers_2.c      man_1_simple_shell  str_funcs1.c
 builtins_help_1.c  err_msgs2.c        input_helpers.c  proc_file_comm.c    str_funcs2.c
@@ -264,7 +237,7 @@ builtins_help_1.c  err_msgs2.c        input_helpers.c  proc_file_comm.c    str_f
 
 Example:
 ```
-$ ./hsh
+$ ./shellby
 $ exit
 ```
 
@@ -274,9 +247,9 @@ $ exit
 
 Example:
 ```
-$ ./hsh
+$ ./shellby
 $ env
-NVM_DIR=/home/projects/.nvm
+NVM_DIR=/home/vagrant/.nvm
 ...
 ```
 
@@ -287,7 +260,7 @@ NVM_DIR=/home/projects/.nvm
 
 Example:
 ```
-$ ./hsh
+$ ./shellby
 $ setenv NAME Poppy
 $ echo $NAME
 Poppy
@@ -300,7 +273,7 @@ Poppy
 
 Example:
 ```
-$ ./hsh
+$ ./shellby
 $ setenv NAME Poppy
 $ unsetenv NAME
 $ echo $NAME
@@ -308,23 +281,17 @@ $ echo $NAME
 $
 ```
 
+## Authors :black_nib:
 
-### What we learned:
-* How a shell works and finds commands
-* Creating, forking and working with processes
-* Executing a program from another program
-* Handling dynamic memory allocation in a large program
-* Pair programming and team work
-* Building a test suite to check our own code
+* Gershom Joel <[Gershom-pro](https://github.com/Gershom-pro)>
+* Methembe Gumbo <[Methieg](https://github.com/Methieg)>
 
+## License :lock:
 
-## Authors
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
 
-👤 **Gershom Joel**
+## Acknowledgements :pray:
 
-- GitHub: [@Gershom-pro](https://github.com/Gershom-pro)
+**Shellby** emulates basic functionality of the **sh** shell. This README borrows form the Linux man pages [sh(1)](https://linux.die.net/man/1/sh) and [dash(1)](https://linux.die.net/man/1/dash).
 
-👤 **Methembe Gumbo**
-
-- GitHub: [@Methieg](https://github.com/Methieg)
-
+This project was written as part of the curriculum for ALX Africa. ALX Africa SE course is a full-stack software engineering program that prepares students for careers in the tech industry using project-based peer learning. For more information, visit (https://www.alxafrica.com/).
