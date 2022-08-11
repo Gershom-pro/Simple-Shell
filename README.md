@@ -286,9 +286,6 @@ $
 * Gershom Joel <[Gershom-pro](https://github.com/Gershom-pro)>
 * Methembe Gumbo <[Methieg](https://github.com/Methieg)>
 
-## License :lock:
-
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
 
 ## Acknowledgements :pray:
 
